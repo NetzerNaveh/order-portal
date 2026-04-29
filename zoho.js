@@ -116,9 +116,10 @@ async function getContactByPhone(phone) {
     variants.add(withCountry);
     variants.add('+' + withCountry);
   }
-  // גרסה עם מקף אחרי 3 ספרות (052-XXXXXXX)
+  // פורמטים עם מקף ורווח
   if (normalized.startsWith('0') && normalized.length === 10) {
     variants.add(normalized.slice(0,3) + '-' + normalized.slice(3));
+    variants.add('(' + normalized.slice(0,3) + ') ' + normalized.slice(3,6) + '-' + normalized.slice(6));
   }
 
   console.log(`[phone-search] variants: ${[...variants].join(', ')}`);
@@ -155,26 +156,53 @@ async function getContactByPhone(phone) {
     if (data.data && data.data.length > 0) return data.data[0];
   } catch (e) { console.log(`[phone-search] word search error: ${e.message}`); }
 
-  // נסה גם Leads module
+  // חיפוש ב-Accounts module
   for (const num of [...variants]) {
     try {
-      const data = await zohoGet('Leads/search', { phone: num });
-      console.log(`[phone-search] Leads phone=${num} found=${data.data?.length || 0}`);
-      if (data.data && data.data.length > 0) return data.data[0];
-    } catch (e) { console.log(`[phone-search] Leads error: ${e.message}`); }
+      const data = await zohoGet('Accounts/search', { phone: num });
+      console.log(`[phone-search] Accounts phone=${num} found=${data.data?.length || 0}`);
+      if (data.data && data.data.length > 0) {
+        const account = data.data[0];
+        // מצא Contact שמשויך ל-Account זה
+        try {
+          const contacts = await zohoGet('Contacts/search', { criteria: `(Account_Name:equals:${account.id})` });
+          if (contacts.data && contacts.data.length > 0) {
+            console.log(`[phone-search] found contact via Account`);
+            return contacts.data[0];
+          }
+        } catch {}
+        // אם אין Contact, בנה אובייקט מה-Account
+        return {
+          id: account.id,
+          Full_Name: account.Account_Name,
+          Account_Name: { id: account.id, name: account.Account_Name },
+          Owner: account.Owner,
+          Mobile: num,
+          _fromAccount: true,
+        };
+      }
+    } catch (e) { console.log(`[phone-search] Accounts error: ${e.message}`); }
 
     try {
-      const data = await zohoGet('Leads/search', { criteria: `(Mobile:equals:${num})` });
-      console.log(`[phone-search] Leads criteria Mobile=${num} found=${data.data?.length || 0}`);
-      if (data.data && data.data.length > 0) return data.data[0];
-    } catch (e) {}
+      const data = await zohoGet('Accounts/search', { criteria: `(Phone:equals:${num})` });
+      console.log(`[phone-search] Accounts criteria Phone=${num} found=${data.data?.length || 0}`);
+      if (data.data && data.data.length > 0) {
+        const account = data.data[0];
+        try {
+          const contacts = await zohoGet('Contacts/search', { criteria: `(Account_Name:equals:${account.id})` });
+          if (contacts.data && contacts.data.length > 0) return contacts.data[0];
+        } catch {}
+        return {
+          id: account.id,
+          Full_Name: account.Account_Name,
+          Account_Name: { id: account.id, name: account.Account_Name },
+          Owner: account.Owner,
+          Mobile: num,
+          _fromAccount: true,
+        };
+      }
+    } catch (e) { console.log(`[phone-search] Accounts criteria error: ${e.message}`); }
   }
-
-  // קבל 5 אנשי קשר ראשונים כדי לאמת גישה
-  try {
-    const sample = await zohoGet('Contacts', { per_page: 3, fields: 'Full_Name,Mobile,Phone' });
-    console.log(`[phone-search] sample contacts: ${JSON.stringify(sample.data?.map(c=>({name:c.Full_Name,mobile:c.Mobile,phone:c.Phone})))}`);
-  } catch (e) { console.log(`[phone-search] sample error: ${e.message}`); }
 
   return null;
 }
