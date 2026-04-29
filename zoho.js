@@ -106,33 +106,56 @@ async function getProducts() {
 async function getContactByPhone(phone) {
   const normalized = phone.replace(/\D/g, '');
 
-  // נסה Mobile ו-Phone בשתי פורמטים
-  const variants = [normalized];
+  // בנה כל הפורמטים האפשריים
+  const variants = new Set([normalized]);
   if (normalized.startsWith('972')) {
-    variants.push('0' + normalized.slice(3));
+    variants.add('0' + normalized.slice(3));
+    variants.add('+' + normalized);
   } else if (normalized.startsWith('0')) {
-    variants.push('972' + normalized.slice(1));
+    const withCountry = '972' + normalized.slice(1);
+    variants.add(withCountry);
+    variants.add('+' + withCountry);
   }
 
-  for (const num of variants) {
-    // חיפוש לפי phone (כולל Mobile)
+  for (const num of [...variants]) {
+    // חיפוש לפי phone API
     try {
       const data = await zohoGet('Contacts/search', { phone: num });
       if (data.data && data.data.length > 0) return data.data[0];
     } catch {}
 
-    // חיפוש ישיר לפי COQL
+    // חיפוש COQL על Mobile וגם Phone
     try {
       const token = await getAccessToken();
       const r = await axios.post('https://www.zohoapis.com/crm/v2/coql', {
-        select_query: `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile = '${num}' LIMIT 1`
+        select_query: `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile = '${num}' OR Phone = '${num}' LIMIT 1`
       }, { headers: { Authorization: `Zoho-oauthtoken ${token}` } });
       if (r.data.data && r.data.data.length > 0) {
         const contact = r.data.data[0];
-        // אם Account_Name הוא string, נביא את ה-id שלו
         if (contact.Account_Name && typeof contact.Account_Name === 'string') {
           const accData = await zohoGet('Contacts/search', { phone: num });
           if (accData.data && accData.data.length > 0) return accData.data[0];
+        }
+        return contact;
+      }
+    } catch {}
+  }
+
+  // חיפוש LIKE על 9 הספרות האחרונות (מתמודד עם מקפים ופורמטים שונים)
+  const last9 = normalized.slice(-9);
+  if (last9.length === 9) {
+    try {
+      const token = await getAccessToken();
+      const r = await axios.post('https://www.zohoapis.com/crm/v2/coql', {
+        select_query: `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile like '%${last9}%' OR Phone like '%${last9}%' LIMIT 1`
+      }, { headers: { Authorization: `Zoho-oauthtoken ${token}` } });
+      if (r.data.data && r.data.data.length > 0) {
+        const contact = r.data.data[0];
+        if (contact.Account_Name && typeof contact.Account_Name === 'string') {
+          try {
+            const accData = await zohoGet('Contacts/search', { phone: normalized });
+            if (accData.data && accData.data.length > 0) return accData.data[0];
+          } catch {}
         }
         return contact;
       }
