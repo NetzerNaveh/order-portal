@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>פורטל הזמנות</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Login Screen -->
+    <div id="screen-login" class="screen active">
+      <div class="login-card">
+        <div class="login-logo">NOON<span>AESTHETICS</span></div>
+        <p class="subtitle">הזן מספר טלפון לקבלת קוד אימות</p>
+        <div id="step-phone">
+          <input type="tel" id="phone-input" placeholder="05X-XXXXXXX" />
+          <button id="btn-send-otp">שלח קוד</button>
+          <p id="login-error" class="error hidden"></p>
+        </div>
+        <div id="step-otp" class="hidden">
+          <p class="otp-hint">הקוד נשלח למספר <span id="otp-phone"></span></p>
+          <input type="text" id="otp-input" placeholder="הזן קוד 6 ספרות" maxlength="6" />
+          <button id="btn-verify-otp">אמת קוד</button>
+          <button id="btn-resend" class="link-btn">שלח קוד מחדש</button>
+          <p id="otp-error" class="error hidden"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Screen -->
+    <div id="screen-products" class="screen hidden">
+      <header>
+        <div class="header-content">
+          <div class="header-logo">NOON</div>
+          <div class="header-actions">
+            <span id="user-name"></span>
+            <button id="btn-cart" class="cart-btn">
+              🛒 <span id="cart-count">0</span>
+            </button>
+            <button id="btn-logout" class="link-btn">התנתק</button>
+          </div>
+        </div>
+      </header>
+      <div id="products-list" class="products-list"></div>
+    </div>
+
+    <!-- Cart Screen -->
+    <div id="screen-cart" class="screen hidden">
+      <header>
+        <div class="header-content">
+          <button id="btn-back" class="link-btn">← חזור לקטלוג</button>
+          <h2>עגלת קניות</h2>
+        </div>
+      </header>
+      <div id="cart-items"></div>
+      <div id="cart-footer" class="cart-footer hidden">
+        <div class="cart-total">
+          סה"כ: <span id="cart-total">₪0</span>
+        </div>
+        <button id="btn-submit-order">שלח הזמנה</button>
+      </div>
+      <p id="cart-empty" class="empty-msg hidden">העגלה ריקה</p>
+    </div>
+
+    <!-- Confirmation Screen -->
+    <div id="screen-confirm" class="screen hidden">
+      <div class="card confirm-card">
+        <div class="success-icon">✓</div>
+        <h2>ההזמנה נשלחה בהצלחה!</h2>
+        <p>ההזמנה שלך התקבלה ונמצאת בטיפול. נציג מכירות יצור איתך קשר בקרוב.</p>
+        <button id="btn-new-order">הזמנה חדשה</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
