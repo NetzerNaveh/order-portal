@@ -146,14 +146,35 @@ async function getContactByPhone(phone) {
     } catch (e) { console.log(`[phone-search] criteria Phone error: ${e.message}`); }
   }
 
-  // חיפוש word על 9 הספרות האחרונות (מתמודד עם מקפים ופורמטים שונים)
+  // חיפוש word על 9 הספרות האחרונות
   const last9 = normalized.slice(-9);
   console.log(`[phone-search] trying word search last9=${last9}`);
   try {
     const data = await zohoGet('Contacts/search', { word: last9 });
-    console.log(`[phone-search] word search last9=${last9} found=${data.data?.length || 0}`);
+    console.log(`[phone-search] word search last9=${last9} found=${data.data?.length || 0} raw=${JSON.stringify(data).slice(0,200)}`);
     if (data.data && data.data.length > 0) return data.data[0];
   } catch (e) { console.log(`[phone-search] word search error: ${e.message}`); }
+
+  // נסה גם Leads module
+  for (const num of [...variants]) {
+    try {
+      const data = await zohoGet('Leads/search', { phone: num });
+      console.log(`[phone-search] Leads phone=${num} found=${data.data?.length || 0}`);
+      if (data.data && data.data.length > 0) return data.data[0];
+    } catch (e) { console.log(`[phone-search] Leads error: ${e.message}`); }
+
+    try {
+      const data = await zohoGet('Leads/search', { criteria: `(Mobile:equals:${num})` });
+      console.log(`[phone-search] Leads criteria Mobile=${num} found=${data.data?.length || 0}`);
+      if (data.data && data.data.length > 0) return data.data[0];
+    } catch (e) {}
+  }
+
+  // קבל 5 אנשי קשר ראשונים כדי לאמת גישה
+  try {
+    const sample = await zohoGet('Contacts', { per_page: 3, fields: 'Full_Name,Mobile,Phone' });
+    console.log(`[phone-search] sample contacts: ${JSON.stringify(sample.data?.map(c=>({name:c.Full_Name,mobile:c.Mobile,phone:c.Phone})))}`);
+  } catch (e) { console.log(`[phone-search] sample error: ${e.message}`); }
 
   return null;
 }
