@@ -117,19 +117,22 @@ async function getContactByPhone(phone) {
     variants.add('+' + withCountry);
   }
 
+  console.log(`[phone-search] variants: ${[...variants].join(', ')}`);
+
   for (const num of [...variants]) {
     // חיפוש לפי phone API
     try {
       const data = await zohoGet('Contacts/search', { phone: num });
+      console.log(`[phone-search] search api phone=${num} found=${data.data?.length || 0}`);
       if (data.data && data.data.length > 0) return data.data[0];
-    } catch {}
+    } catch (e) { console.log(`[phone-search] search api error: ${e.message}`); }
 
     // חיפוש COQL על Mobile וגם Phone
     try {
       const token = await getAccessToken();
-      const r = await axios.post('https://www.zohoapis.com/crm/v2/coql', {
-        select_query: `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile = '${num}' OR Phone = '${num}' LIMIT 1`
-      }, { headers: { Authorization: `Zoho-oauthtoken ${token}` } });
+      const q = `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile = '${num}' OR Phone = '${num}' LIMIT 1`;
+      const r = await axios.post('https://www.zohoapis.com/crm/v2/coql', { select_query: q }, { headers: { Authorization: `Zoho-oauthtoken ${token}` } });
+      console.log(`[phone-search] coql exact num=${num} found=${r.data.data?.length || 0}`);
       if (r.data.data && r.data.data.length > 0) {
         const contact = r.data.data[0];
         if (contact.Account_Name && typeof contact.Account_Name === 'string') {
@@ -138,17 +141,18 @@ async function getContactByPhone(phone) {
         }
         return contact;
       }
-    } catch {}
+    } catch (e) { console.log(`[phone-search] coql exact error: ${e.message}`); }
   }
 
-  // חיפוש LIKE על 9 הספרות האחרונות (מתמודד עם מקפים ופורמטים שונים)
+  // חיפוש LIKE על 9 הספרות האחרונות
   const last9 = normalized.slice(-9);
+  console.log(`[phone-search] trying LIKE with last9=${last9}`);
   if (last9.length === 9) {
     try {
       const token = await getAccessToken();
-      const r = await axios.post('https://www.zohoapis.com/crm/v2/coql', {
-        select_query: `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile like '%${last9}%' OR Phone like '%${last9}%' LIMIT 1`
-      }, { headers: { Authorization: `Zoho-oauthtoken ${token}` } });
+      const q = `SELECT id, Full_Name, First_Name, Last_Name, Mobile, Phone, Account_Name, Owner FROM Contacts WHERE Mobile like '%${last9}%' OR Phone like '%${last9}%' LIMIT 1`;
+      const r = await axios.post('https://www.zohoapis.com/crm/v2/coql', { select_query: q }, { headers: { Authorization: `Zoho-oauthtoken ${token}` } });
+      console.log(`[phone-search] coql LIKE last9=${last9} found=${r.data.data?.length || 0} err=${JSON.stringify(r.data.info || r.data.message || '')}`);
       if (r.data.data && r.data.data.length > 0) {
         const contact = r.data.data[0];
         if (contact.Account_Name && typeof contact.Account_Name === 'string') {
@@ -159,7 +163,7 @@ async function getContactByPhone(phone) {
         }
         return contact;
       }
-    } catch {}
+    } catch (e) { console.log(`[phone-search] coql LIKE error: ${e.message}`); }
   }
 
   return null;
