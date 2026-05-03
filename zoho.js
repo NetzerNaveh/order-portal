@@ -83,9 +83,39 @@ const PRODUCT_IMAGE_MAP = [
   // Anti-Aging Peptide Complex
   { keywords: ['peptide'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Anti-Aging-Peptide-Complex-NEW.webp' },
   { keywords: ['פפטיד'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Anti-Aging-Peptide-Complex-NEW.webp' },
-  // Post Procedure Program (תמונה מקומית)
+  // Post Procedure Program
   { keywords: ['post', 'procedure'], url: '/images/post-procedure.jpg' },
   { keywords: ['לאחר', 'טיפול'], url: '/images/post-procedure.jpg' },
+  // Double White
+  { keywords: ['double', 'white'], url: '/images/double-white.jpg' },
+  { keywords: ['דאבל', 'ווייט'], url: '/images/double-white.jpg' },
+  // MediClay Mask
+  { keywords: ['mediclay'], url: '/images/mediclay-mask.jpg' },
+  { keywords: ['מדיקליי'], url: '/images/mediclay-mask.jpg' },
+  // G-Peel Nano (לפני G-Peel)
+  { keywords: ['g-peel', 'nano'], url: '/images/g-peel-nano.jpg' },
+  { keywords: ['g peel', 'nano'], url: '/images/g-peel-nano.jpg' },
+  { keywords: ['g-peel', 'nanocon'], url: '/images/g-peel-nano.jpg' },
+  // G-Peel
+  { keywords: ['g-peel'], url: '/images/g-peel.jpg' },
+  { keywords: ['g peel'], url: '/images/g-peel.jpg' },
+  // J-Peel Delicate
+  { keywords: ['j-peel'], url: '/images/j-peel.jpg' },
+  { keywords: ['j peel'], url: '/images/j-peel.jpg' },
+  // P-Peel 20
+  { keywords: ['p-peel', '20'], url: '/images/p-peel-20.jpg' },
+  { keywords: ['p peel', '20'], url: '/images/p-peel-20.jpg' },
+  // P-Peel 40
+  { keywords: ['p-peel', '40'], url: '/images/p-peel-40.jpg' },
+  { keywords: ['p peel', '40'], url: '/images/p-peel-40.jpg' },
+  // P-Peel (fallback)
+  { keywords: ['p-peel'], url: '/images/p-peel-20.jpg' },
+  // Pre-Peel Conditioner
+  { keywords: ['pre-peel'], url: '/images/pre-peel.jpg' },
+  { keywords: ['pre', 'peel', 'cond'], url: '/images/pre-peel.jpg' },
+  // Peel Neutralizer
+  { keywords: ['neutralizer'], url: '/images/peel-neutralizer.jpg' },
+  { keywords: ['neutral'], url: '/images/peel-neutralizer.jpg' },
   // Pre Procedure Program
   { keywords: ['pre', 'procedure'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/Pre-Procedure-Program-Box-2.webp' },
   { keywords: ['הכנה', 'טיפול'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/Pre-Procedure-Program-Box-2.webp' },
