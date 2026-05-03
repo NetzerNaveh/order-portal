@@ -42,27 +42,57 @@ async function zohoPost(path, data) {
 // מיפוי תמונות לפי מילות מפתח בשם המוצר (אנגלית/עברית)
 // תמונות נאספו מ-noonaesthetics.com
 const PRODUCT_IMAGE_MAP = [
-  // Brush & Go - חייב להיות לפני Azelaic-S וכו' (ספציפי יותר)
+  // Brush & Go SPF 50
   { keywords: ['brush', 'go'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-Brush-Go-SPF-50-All-Skin-Closed.webp' },
   // TrioLift
   { keywords: ['triolift'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/TrioLift-copy.webp' },
   // Reform Eye Cream
   { keywords: ['reform'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/02/NOON-Reform-Eye-Cream-20200701-2-copy.webp' },
-  // In-Depth Filler Serum - לפני Filler Cream
+  // In-Depth Filler Serum (לפני Filler Cream)
   { keywords: ['filler', 'serum'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/In-Depth-Filler-Serum-close.webp' },
   // In-Depth Filler Cream
   { keywords: ['filler', 'cream'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/In-Depth-Filler-Cream-close.webp' },
-  // Filler (כל שאר מוצרי filler)
   { keywords: ['filler'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/In-Depth-Filler-Serum-close.webp' },
+  // Restart Serum
+  { keywords: ['restart'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/04/Restart-Serum3-1.webp' },
+  // Halo-Ronic Serum
+  { keywords: ['halo'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Halo-Ronic-Serum.webp' },
+  { keywords: ['הלו'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Halo-Ronic-Serum.webp' },
+  // Igloo Mask (לפני Igloo Moist)
+  { keywords: ['igloo', 'mask'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/04/Igloo3.webp' },
+  { keywords: ['igloo', 'מסכ'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/04/Igloo3.webp' },
+  { keywords: ['מסכת', 'איגלו'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/04/Igloo3.webp' },
+  // Igloo Moist
+  { keywords: ['igloo'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Igloo-Moist-close.webp' },
+  { keywords: ['איגלו'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Igloo-Moist-close.webp' },
+  // MicroSoft Cleanser
+  { keywords: ['microsoft'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/MicroSoft-Cleanser-1.webp' },
+  { keywords: ['micro', 'soft'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/MicroSoft-Cleanser-1.webp' },
+  { keywords: ['מיקרו'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/MicroSoft-Cleanser-1.webp' },
+  // CosmoClear Cleanser
+  { keywords: ['cosmo', 'clear'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-CosmoClear-Cleanser.webp' },
+  { keywords: ['cosmoclear'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-CosmoClear-Cleanser.webp' },
+  { keywords: ['קוסמו'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-CosmoClear-Cleanser.webp' },
+  // MultiVit Sun Protector SPF 30
+  { keywords: ['multivit'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-Multi-Vit-Sun-Protector-SPF-30-close.webp' },
+  { keywords: ['מולטי', 'ויט'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-Multi-Vit-Sun-Protector-SPF-30-close.webp' },
+  // TXA-Bright Complex
+  { keywords: ['txa'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/TXA-Brightening-Complex-NEW.webp' },
+  // NAM-Bright Complex
+  { keywords: ['nam'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/NAM-Brightening-Complex-NEW.webp' },
+  // Anti-Aging Peptide Complex
+  { keywords: ['peptide'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Anti-Aging-Peptide-Complex-NEW.webp' },
+  { keywords: ['פפטיד'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Anti-Aging-Peptide-Complex-NEW.webp' },
+  // Pre Procedure Program
+  { keywords: ['pre', 'procedure'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/Pre-Procedure-Program-Box-2.webp' },
+  { keywords: ['הכנה', 'טיפול'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/Pre-Procedure-Program-Box-2.webp' },
   // Lacto-C 15
   { keywords: ['lacto', 'c', '15'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Lacto-C-15-close.webp' },
-  // Lacto-C (ללא 15 - fallback)
   { keywords: ['lacto', 'c'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Lacto-C-15-close.webp' },
   // Lacto-S
   { keywords: ['lacto', 's'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-Lacto-S-close.webp' },
   // Lacto 10
   { keywords: ['lacto', '10'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Lacto-10-1.webp' },
-  // Lacto (כל שאר)
   { keywords: ['lacto'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Lacto-C-15-close.webp' },
   // Retinol Charisma
   { keywords: ['retinol'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Retinol-Charisma-1.0-close.webp' },
@@ -70,7 +100,6 @@ const PRODUCT_IMAGE_MAP = [
   { keywords: ['vitamin', 'c'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Vitamin-C-Serum-close.webp' },
   { keywords: ['ויטמין', 'c'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Vitamin-C-Serum-close.webp' },
   // Smart Occlusive System
-  { keywords: ['smart', 'occlus'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Smart-Occulsive-System.webp' },
   { keywords: ['smart'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Smart-Occulsive-System.webp' },
   // Optimal Moisturizing Guardian
   { keywords: ['optimal'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Optimal-Moisturizing-Guardian-1.webp' },
@@ -82,9 +111,7 @@ const PRODUCT_IMAGE_MAP = [
   { keywords: ['benzo'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Benzo-Azeline-10-close.webp' },
   // Azelaic-S (לפני Azelaic-BR)
   { keywords: ['azelaic', 's'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-Azelaic-S-13-close.webp' },
-  // Azelaic-BR
   { keywords: ['azelaic', 'br'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Azelaic-Br-13.webp' },
-  // Azelaic (כל שאר)
   { keywords: ['azelaic'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-Azelaic-S-13-close.webp' },
   // HydroCalming Vit Complex
   { keywords: ['hydro'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/HydroCalming-Vit-Complex-NEW.webp' },
