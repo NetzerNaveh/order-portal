@@ -86,6 +86,9 @@ const PRODUCT_IMAGE_MAP = [
   // Post Procedure Program
   { keywords: ['post', 'procedure'], url: '/images/post-procedure.jpg' },
   { keywords: ['לאחר', 'טיפול'], url: '/images/post-procedure.jpg' },
+  // ThermoGel
+  { keywords: ['thermo'], url: '/images/thermogel.jpg' },
+  { keywords: ['תרמו'], url: '/images/thermogel.jpg' },
   // Double White
   { keywords: ['double', 'white'], url: '/images/double-white.jpg' },
   { keywords: ['דאבל', 'ווייט'], url: '/images/double-white.jpg' },
