@@ -83,6 +83,9 @@ const PRODUCT_IMAGE_MAP = [
   // Anti-Aging Peptide Complex
   { keywords: ['peptide'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Anti-Aging-Peptide-Complex-NEW.webp' },
   { keywords: ['פפטיד'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Anti-Aging-Peptide-Complex-NEW.webp' },
+  // Post Procedure Program (תמונה מקומית)
+  { keywords: ['post', 'procedure'], url: '/images/post-procedure.jpg' },
+  { keywords: ['לאחר', 'טיפול'], url: '/images/post-procedure.jpg' },
   // Pre Procedure Program
   { keywords: ['pre', 'procedure'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/Pre-Procedure-Program-Box-2.webp' },
   { keywords: ['הכנה', 'טיפול'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/03/Pre-Procedure-Program-Box-2.webp' },

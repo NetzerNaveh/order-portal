@@ -6,9 +6,12 @@ const twilio = require('twilio');
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const { sendOTP, verifyOTP } = require('./otp');
 
+const path = require('path');
 const app = express();
 app.use(cors());
 app.use(express.json());
+// הגש תמונות מקומיות מתיקיית public/images
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 // Session store: { sessionToken: { phone, contactId, contact } }
 const sessions = {};
