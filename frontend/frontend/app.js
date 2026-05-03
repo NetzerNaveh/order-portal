@@ -119,15 +119,25 @@ async function loadProducts() {
   }
 }
 
+function getImageUrl(img) {
+  if (!img) return null;
+  if (img.startsWith('/')) return `${API}${img}`;
+  return img;
+}
+
 function renderProducts() {
   const list = document.getElementById('products-list');
   list.innerHTML = '';
   products.forEach(p => {
     const qty = cart[p.id]?.quantity || 0;
     const priceDisplay = p.price != null ? `₪${Number(p.price).toFixed(2)}` : '';
+    const imgUrl = getImageUrl(p.image);
     const row = document.createElement('div');
     row.className = 'product-row';
     row.innerHTML = `
+      <div class="product-row-img">
+        ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy">` : ''}
+      </div>
       <div>
         <div class="product-row-name">${p.name}</div>
         ${p.unit ? `<div class="product-row-unit">${p.unit}</div>` : ''}
