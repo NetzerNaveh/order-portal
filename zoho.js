@@ -99,10 +99,14 @@ const PRODUCT_IMAGE_MAP = [
   // Vitamin C Serum
   { keywords: ['vitamin', 'c'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Vitamin-C-Serum-close.webp' },
   { keywords: ['ויטמין', 'c'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Vitamin-C-Serum-close.webp' },
-  // Smart Occlusive System
+  // Smart Occlusive System (גם SOS)
   { keywords: ['smart'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Smart-Occulsive-System.webp' },
-  // Optimal Moisturizing Guardian
+  { keywords: ['sos'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Smart-Occulsive-System.webp' },
+  { keywords: ['אס.או.אס'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Smart-Occulsive-System.webp' },
+  // Optimal Moisturizing Guardian (גם OMG)
   { keywords: ['optimal'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Optimal-Moisturizing-Guardian-1.webp' },
+  { keywords: ['omg'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Optimal-Moisturizing-Guardian-1.webp' },
+  { keywords: ['או.אמ.ג'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/Optimal-Moisturizing-Guardian-1.webp' },
   // DeFlame
   { keywords: ['deflame'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-DeFlame-close.webp' },
   { keywords: ['de-flame'], url: 'https://noonaesthetics.com/wp-content/uploads/2025/01/US-DeFlame-close.webp' },
