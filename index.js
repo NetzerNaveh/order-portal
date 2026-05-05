@@ -11,14 +11,14 @@ const SALES_REP_PHONES = (() => {
 
 // שם בעברית + מגדר לכל מדריך
 const SALES_REP_INFO = {
-  'fidaa@noonaesthetics.com':  { name: 'פידאא',  verb: 'תעבור' },
-  'ifat@noonaesthetics.com':   { name: 'יפעת',   verb: 'תעבור' },
-  'mika@noonaesthetics.com':   { name: 'מיקה',   verb: 'תעבור' },
-  'nava@beautyplus.co.il':     { name: 'נאווה',  verb: 'תעבור' },
-  'smadar@beautyplus.co.il':   { name: 'סמדר',   verb: 'תעבור' },
-  'yoav@beautyplus.co.il':     { name: 'יואב',   verb: 'יעבור'  },
-  'tal@beautyplus.co.il':      { name: 'טל',     verb: 'תעבור' },
-  'nelia@beautyplus.co.il':    { name: 'נליה',   verb: 'תעבור' },
+  'fidaa@noonaesthetics.com':  { name: 'פידאא',  verb: 'תעבור', contactVerb: 'ותיצור' },
+  'ifat@noonaesthetics.com':   { name: 'יפעת',   verb: 'תעבור', contactVerb: 'ותיצור' },
+  'mika@noonaesthetics.com':   { name: 'מיקה',   verb: 'תעבור', contactVerb: 'ותיצור' },
+  'nava@beautyplus.co.il':     { name: 'נאווה',  verb: 'תעבור', contactVerb: 'ותיצור' },
+  'smadar@beautyplus.co.il':   { name: 'סמדר',   verb: 'תעבור', contactVerb: 'ותיצור' },
+  'yoav@beautyplus.co.il':     { name: 'יואב',   verb: 'יעבור', contactVerb: 'ויצור'  },
+  'tal@beautyplus.co.il':      { name: 'טל',     verb: 'תעבור', contactVerb: 'ותיצור' },
+  'nelia@beautyplus.co.il':    { name: 'נליה',   verb: 'תעבור', contactVerb: 'ותיצור' },
 };
 
 async function getSalesRepPhone(owner) {
@@ -131,8 +131,9 @@ app.post('/api/orders', authenticate, async (req, res) => {
   res.json({
     success: true,
     orderId,
-    repName: repInfo?.name || null,
-    repVerb: repInfo?.verb || null,
+    repName:        repInfo?.name        || null,
+    repVerb:        repInfo?.verb        || null,
+    repContactVerb: repInfo?.contactVerb || null,
   });
 });
 

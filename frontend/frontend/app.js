@@ -239,8 +239,8 @@ document.getElementById('btn-submit-order').addEventListener('click', async () =
 
     // הודעת אישור מותאמת אישית
     const msg = document.getElementById('confirm-msg');
-    if (result.repName && result.repVerb) {
-      msg.textContent = `תודה רבה על ההזמנה, היא נקלטה במערכת, ${result.repName} ${result.repVerb} ויצור איתכם קשר בקרוב לאישור ההזמנה`;
+    if (result.repName && result.repVerb && result.repContactVerb) {
+      msg.textContent = `תודה רבה על ההזמנה, היא נקלטה במערכת, ${result.repName} ${result.repVerb} ${result.repContactVerb} איתכם קשר בקרוב לאישור ההזמנה`;
     } else {
       msg.textContent = 'תודה רבה על ההזמנה, היא נקלטה במערכת ויצרו איתכם קשר בקרוב לאישור ההזמנה';
     }
