@@ -1,7 +1,25 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { getProducts, getContactByPhone, createSalesOrder, getAssignedSalesRep } = require('./zoho');
+const { getProducts, getContactByPhone, createSalesOrder, getAssignedSalesRep, getOwnerPhone } = require('./zoho');
+
+// מיפוי אימייל/ID של משתמש ZOHO → מספר טלפון
+// ניתן להגדיר דרך env var: SALES_REP_PHONES={"email@x.com":"0521234567"}
+const SALES_REP_PHONES = (() => {
+  try { return JSON.parse(process.env.SALES_REP_PHONES || '{}'); } catch { return {}; }
+})();
+
+async function getSalesRepPhone(owner) {
+  if (!owner) return null;
+  // חפש לפי אימייל קודם (env var)
+  if (owner.email && SALES_REP_PHONES[owner.email]) return SALES_REP_PHONES[owner.email];
+  // חפש לפי ID (env var)
+  if (owner.id && SALES_REP_PHONES[owner.id]) return SALES_REP_PHONES[owner.id];
+  // נסה ZOHO Users API
+  const phone = await getOwnerPhone(owner.id);
+  if (phone) return phone;
+  return null;
+}
 const twilio = require('twilio');
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const { sendOTP, verifyOTP } = require('./otp');
@@ -75,21 +93,26 @@ app.post('/api/orders', authenticate, async (req, res) => {
   const result = await createSalesOrder(contact, items);
   const orderId = result.details?.id;
 
-  // שלח WhatsApp לאיש המכירות
+  // שלח SMS למדריך (בעל החשבון ב-ZOHO)
   try {
-    const salesRep = contact.Owner;
-    if (salesRep?.phone) {
-      const customerName = contact.Full_Name || contact.First_Name || '';
+    const repPhone = await getSalesRepPhone(contact.Owner);
+    console.log(`[sms] owner=${JSON.stringify(contact.Owner)} repPhone=${repPhone}`);
+    if (repPhone) {
+      const customerName = contact.Full_Name || contact.Account_Name?.name || contact.First_Name || '';
       const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
-      const msg = `הזמנה חדשה מ-${customerName} נקלטה במערכת (טיוטה).\nסה"כ: ₪${total.toFixed(2)}\nיש לטפל בהזמנה ב-ZOHO CRM.`;
+      const itemLines = items.map(i => `• ${i.name || ''} x${i.quantity}`).join('\n');
+      const msg = `הזמנה חדשה נכנסה מ-${customerName}\nסה"כ: ₪${total.toFixed(2)}\n${itemLines}\nיש לאשר ב-ZOHO CRM`;
       await twilioClient.messages.create({
         body: msg,
         from: process.env.TWILIO_PHONE_NUMBER,
-        to: salesRep.phone,
+        to: repPhone.startsWith('+') ? repPhone : `+972${repPhone.replace(/^0/, '')}`,
       });
+      console.log(`[sms] נשלח ל-${repPhone}`);
+    } else {
+      console.log('[sms] לא נמצא טלפון למדריך - הגדר SALES_REP_PHONES ב-Render');
     }
   } catch (e) {
-    console.error('שגיאה בשליחת SMS לאיש מכירות:', e.message);
+    console.error('[sms] שגיאה:', e.message);
   }
 
   res.json({ success: true, orderId });

@@ -373,10 +373,22 @@ async function createSalesOrder(contact, items) {
   return result.data[0];
 }
 
+async function getOwnerPhone(ownerId) {
+  // שולף את מספר הטלפון של משתמש ZOHO לפי ID
+  try {
+    const data = await zohoGet(`users/${ownerId}`);
+    const user = data.users?.[0];
+    return user?.mobile || user?.phone || null;
+  } catch (e) {
+    console.log(`[owner-phone] error: ${e.message}`);
+    return null;
+  }
+}
+
 async function getAssignedSalesRep(contact) {
   // Returns the Owner of the contact's Account (sales rep assigned to customer)
   if (!contact.Owner) return null;
   return contact.Owner;
 }
 
-module.exports = { getProducts, getContactByPhone, createSalesOrder, getAssignedSalesRep };
+module.exports = { getProducts, getContactByPhone, createSalesOrder, getAssignedSalesRep, getOwnerPhone };
