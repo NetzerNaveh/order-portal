@@ -228,12 +228,15 @@ document.getElementById('btn-submit-order').addEventListener('click', async () =
     productId: product.id,
     quantity,
     price: product.price,
+    name: product.name,
   }));
+  const notes = document.getElementById('order-notes').value.trim();
 
   setLoading(true);
   try {
-    const result = await apiFetch('/api/orders', { method: 'POST', body: JSON.stringify({ items }) });
+    const result = await apiFetch('/api/orders', { method: 'POST', body: JSON.stringify({ items, notes }) });
     cart = {};
+    document.getElementById('order-notes').value = '';
     updateCartCount();
     renderProducts();
 

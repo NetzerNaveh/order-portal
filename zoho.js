@@ -345,7 +345,7 @@ async function getContactByPhone(phone) {
   return null;
 }
 
-async function createSalesOrder(contact, items) {
+async function createSalesOrder(contact, items, notes) {
   const lineItems = items.map(item => ({
     product: { id: item.productId },
     quantity: item.quantity,
@@ -366,6 +366,7 @@ async function createSalesOrder(contact, items) {
     Product_Details: lineItems,
   };
   if (accountName) orderData.Account_Name = accountName;
+  if (notes) orderData.Description = notes;
 
   const payload = { data: [orderData] };
 

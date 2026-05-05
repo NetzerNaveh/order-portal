@@ -98,11 +98,11 @@ app.get('/api/products', authenticate, async (req, res) => {
 // ─── הזמנה ────────────────────────────────────────────────────────────────────
 
 app.post('/api/orders', authenticate, async (req, res) => {
-  const { items } = req.body;
+  const { items, notes } = req.body;
   if (!items || items.length === 0) return res.status(400).json({ error: 'עגלה ריקה' });
 
   const contact = req.session.contact;
-  const result = await createSalesOrder(contact, items);
+  const result = await createSalesOrder(contact, items, notes);
   const orderId = result.details?.id;
 
   // שלח SMS למדריך (בעל החשבון ב-ZOHO)
@@ -113,7 +113,8 @@ app.post('/api/orders', authenticate, async (req, res) => {
       const customerName = contact.Full_Name || contact.Account_Name?.name || contact.First_Name || '';
       const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
       const itemLines = items.map(i => `• ${i.name || ''} x${i.quantity}`).join('\n');
-      const msg = `הזמנה חדשה נכנסה מ-${customerName}\nסה"כ: ₪${total.toFixed(2)}\n${itemLines}\nיש לאשר ב-ZOHO CRM`;
+      const notesLine = notes ? `\nהערות: ${notes}` : '';
+      const msg = `הזמנה חדשה נכנסה מ-${customerName}\nסה"כ: ₪${total.toFixed(2)}\n${itemLines}${notesLine}\nיש לאשר ב-ZOHO CRM`;
       await twilioClient.messages.create({
         body: msg,
         from: process.env.TWILIO_PHONE_NUMBER,
