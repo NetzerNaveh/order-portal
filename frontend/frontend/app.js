@@ -232,10 +232,19 @@ document.getElementById('btn-submit-order').addEventListener('click', async () =
 
   setLoading(true);
   try {
-    await apiFetch('/api/orders', { method: 'POST', body: JSON.stringify({ items }) });
+    const result = await apiFetch('/api/orders', { method: 'POST', body: JSON.stringify({ items }) });
     cart = {};
     updateCartCount();
     renderProducts();
+
+    // הודעת אישור מותאמת אישית
+    const msg = document.getElementById('confirm-msg');
+    if (result.repName && result.repVerb) {
+      msg.textContent = `תודה רבה על ההזמנה, היא נקלטה במערכת, ${result.repName} ${result.repVerb} ויצור איתכם קשר בקרוב לאישור ההזמנה`;
+    } else {
+      msg.textContent = 'תודה רבה על ההזמנה, היא נקלטה במערכת ויצרו איתכם קשר בקרוב לאישור ההזמנה';
+    }
+
     showScreen('screen-confirm');
   } catch (e) {
     alert('שגיאה בשליחת ההזמנה: ' + e.message);

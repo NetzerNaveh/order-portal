@@ -9,6 +9,18 @@ const SALES_REP_PHONES = (() => {
   try { return JSON.parse(process.env.SALES_REP_PHONES || '{}'); } catch { return {}; }
 })();
 
+// שם בעברית + מגדר לכל מדריך
+const SALES_REP_INFO = {
+  'fidaa@noonaesthetics.com':  { name: 'פידאא',  verb: 'תעבור' },
+  'ifat@noonaesthetics.com':   { name: 'יפעת',   verb: 'תעבור' },
+  'mika@noonaesthetics.com':   { name: 'מיקה',   verb: 'תעבור' },
+  'nava@beautyplus.co.il':     { name: 'נאווה',  verb: 'תעבור' },
+  'smadar@beautyplus.co.il':   { name: 'סמדר',   verb: 'תעבור' },
+  'yoav@beautyplus.co.il':     { name: 'יואב',   verb: 'יעבור'  },
+  'tal@beautyplus.co.il':      { name: 'טל',     verb: 'תעבור' },
+  'nelia@beautyplus.co.il':    { name: 'נליה',   verb: 'תעבור' },
+};
+
 async function getSalesRepPhone(owner) {
   if (!owner) return null;
   // חפש לפי אימייל קודם (env var)
@@ -115,7 +127,13 @@ app.post('/api/orders', authenticate, async (req, res) => {
     console.error('[sms] שגיאה:', e.message);
   }
 
-  res.json({ success: true, orderId });
+  const repInfo = contact.Owner?.email ? SALES_REP_INFO[contact.Owner.email] : null;
+  res.json({
+    success: true,
+    orderId,
+    repName: repInfo?.name || null,
+    repVerb: repInfo?.verb || null,
+  });
 });
 
 // ─── Health check ─────────────────────────────────────────────────────────────
