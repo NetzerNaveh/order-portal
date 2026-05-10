@@ -366,7 +366,7 @@ async function createSalesOrder(contact, items, notes) {
     Product_Details: lineItems,
   };
   if (accountName) orderData.Account_Name = accountName;
-  if (notes) orderData.Description = notes;
+  if (notes) orderData.field7 = notes;
 
   const payload = { data: [orderData] };
 
