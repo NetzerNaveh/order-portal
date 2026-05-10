@@ -142,5 +142,16 @@ app.post('/api/orders', authenticate, async (req, res) => {
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+// ─── Debug (temporary) ────────────────────────────────────────────────────────
+app.get('/debug/sms-config', (req, res) => {
+  const keys = Object.keys(SALES_REP_PHONES);
+  res.json({
+    repCount: keys.length,
+    emails: keys,
+    twilioFrom: process.env.TWILIO_PHONE_NUMBER || 'NOT SET',
+    twilioSid: process.env.TWILIO_ACCOUNT_SID ? process.env.TWILIO_ACCOUNT_SID.slice(0,8) + '...' : 'NOT SET',
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
