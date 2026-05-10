@@ -367,6 +367,7 @@ async function createSalesOrder(contact, items, notes) {
   };
   if (accountName) orderData.Account_Name = accountName;
   if (notes) orderData.field7 = notes;
+  if (contact.Owner?.id) orderData.Owner = { id: contact.Owner.id };
 
   const payload = { data: [orderData] };
 
